@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Rent Payment History</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Month</th>
+            <th>Amount</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in payments %}
+        <tr>
+            <td>{{ p.property.title }}</td>
+            <td>{{ p.month }}</td>
+            <td>{{ p.amount }}</td>
+            <td>{{ p.status.value }}</td>
+        </tr>
+    {% else %}
+        <tr><td colspan="4">No rent records yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

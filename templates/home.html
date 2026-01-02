@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Find Your Next Home</h1>
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Location</label>
+        <input type="text" name="location" class="form-control" value="{{ request.query_params.get('location', '') }}">
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Min Rent</label>
+        <input type="number" step="0.01" name="min_rent" class="form-control" value="{{ request.query_params.get('min_rent', '') }}">
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Max Rent</label>
+        <input type="number" step="0.01" name="max_rent" class="form-control" value="{{ request.query_params.get('max_rent', '') }}">
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Type</label>
+        <select name="property_type" class="form-select">
+            <option value="">Any</option>
+            <option value="apartment">Apartment</option>
+            <option value="house">House</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+    </div>
+</form>
+
+<div class="row">
+    {% for p in properties %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if p.main_image_path %}
+                <img src="{{ p.main_image_path }}" class="card-img-top" alt="Property image">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ p.title }}</h5>
+                <p class="card-text">{{ p.location }}</p>
+                <p class="card-text"><strong>Rent:</strong> {{ p.rent_amount }}</p>
+                <a href="/tenant/properties/{{ p.id }}" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p>No properties found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

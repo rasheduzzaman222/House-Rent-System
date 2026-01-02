@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Owner Dashboard</h2>
+<a href="/owner/properties/new" class="btn btn-success mb-3">Add Property</a>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Rent</th>
+            <th>Status</th>
+            <th>Actions</th>
+            <th>Payments</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in properties %}
+        <tr>
+            <td>{{ p.title }}</td>
+            <td>{{ p.location }}</td>
+            <td>{{ p.rent_amount }}</td>
+            <td>{{ p.availability_status.value }}</td>
+            <td>
+                <a class="btn btn-sm btn-primary" href="/owner/properties/{{ p.id }}/edit">Edit</a>
+                <form method="post" action="/owner/properties/{{ p.id }}/delete" style="display:inline-block">
+                    <button class="btn btn-sm btn-danger" onclick="return confirm('Delete property?')">Delete</button>
+                </form>
+            </td>
+            <td>
+                <a class="btn btn-sm btn-outline-secondary" href="/owner/properties/{{ p.id }}/payments">Track Payments</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

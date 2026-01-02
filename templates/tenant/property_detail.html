@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ property.title }}</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        {% if property.main_image_path %}
+            <img
+                src="{{ property.main_image_path }}"
+                class="img-fluid mb-3"
+                alt="Property image"
+            >
+        {% endif %}
+
+        <p><strong>Location:</strong> {{ property.location }}</p>
+        <p><strong>Rent:</strong> {{ property.rent_amount }}</p>
+        <p><strong>Type:</strong> {{ property.property_type.value|capitalize }}</p>
+        <p><strong>Status:</strong> {{ property.availability_status.value|capitalize }}</p>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Description</h4>
+        <p>{{ property.description }}</p>
+
+        <hr>
+
+        {# 🔐 LOGIN CHECK START #}
+        {% if request.session.get("user_id") %}
+
+            <h4>Owner Contact</h4>
+            <p><strong>Name:</strong> {{ property.owner.full_name }}</p>
+            <p><strong>Email:</strong> {{ property.owner.email }}</p>
+            <p><strong>Phone:</strong> {{ property.owner.phone }}</p>
+
+            <hr>
+
+            <h5>Contact Owner</h5>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <!-- WhatsApp -->
+                <a
+                    href="https://wa.me/88{{ property.owner.phone }}?text=Hello,%20I%20am%20interested%20in%20your%20house."
+                    target="_blank"
+                    class="btn btn-success"
+                >
+                    💬 WhatsApp
+                </a>
+
+                <!-- Email -->
+                <a
+                    href="mailto:{{ property.owner.email }}?subject=Interested in House Rent"
+                    class="btn btn-primary"
+                >
+                    📧 Email
+                </a>
+
+                <!-- Phone -->
+                <a
+                    href="tel:{{ property.owner.phone }}"
+                    class="btn btn-outline-dark"
+                >
+                    📞 Call
+                </a>
+            </div>
+
+        {% else %}
+
+            <!-- 🚫 NOT LOGGED IN -->
+            <div class="alert alert-warning mt-3">
+                <strong>Login required!</strong><br>
+                Please
+                <a href="/login" class="alert-link">login</a>
+                or
+                <a href="/register" class="alert-link">register</a>
+                to contact the owner.
+            </div>
+
+        {% endif %}
+        {# 🔐 LOGIN CHECK END #}
+
+    </div>
+</div>
+{% endblock %}

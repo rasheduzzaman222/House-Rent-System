@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<!-- -------------------- FILTERS -------------------- -->
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Search Users (name or email)</label>
+        <input
+            type="text"
+            name="user_q"
+            class="form-control"
+            value="{{ request.query_params.get('user_q', '') }}"
+        >
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">User Role</label>
+        <select name="user_role" class="form-select">
+            <option value="">All</option>
+            <option value="tenant" {% if request.query_params.get('user_role') == 'tenant' %}selected{% endif %}>Tenant</option>
+            <option value="owner" {% if request.query_params.get('user_role') == 'owner' %}selected{% endif %}>Owner</option>
+            <option value="admin" {% if request.query_params.get('user_role') == 'admin' %}selected{% endif %}>Admin</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Property Location Contains</label>
+        <input
+            type="text"
+            name="property_location"
+            class="form-control"
+            value="{{ request.query_params.get('property_location', '') }}"
+        >
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">
+            Apply Filters
+        </button>
+    </div>
+</form>
+
+<hr>
+
+<!-- -------------------- USERS -------------------- -->
+<h3>Users</h3>
+<table class="table table-bordered align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th style="width:120px;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for u in users %}
+        <tr>
+            <td>{{ u.full_name }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.role.value }}</td>
+            <td>
+                {% if u.role.value != 'ADMIN' %}
+                <form
+                    method="post"
+                    action="/admin/users/{{ u.id }}/remove"
+                    onsubmit="return confirm('Are you sure you want to remove this user?');"
+                >
+                    <button class="btn btn-sm btn-danger">
+                        Remove
+                    </button>
+                </form>
+                {% else %}
+                <span class="text-muted">Protected</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+<!-- -------------------- PROPERTIES -------------------- -->
+<h3>Properties</h3>
+<table class="table table-bordered align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Title</th>
+            <th>Owner</th>
+            <th>Location</th>
+            <th>Rent</th>
+            <th style="width:120px;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in properties %}
+        <tr>
+            <td>{{ p.title }}</td>
+            <td>{{ p.owner.full_name }}</td>
+            <td>{{ p.location }}</td>
+            <td>{{ p.rent_amount }}</td>
+            <td>
+                <form
+                    method="post"
+                    action="/admin/properties/{{ p.id }}/remove"
+                    onsubmit="return confirm('Remove this property?');"
+                >
+                    <button class="btn btn-sm btn-danger">
+                        Remove
+                    </button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
